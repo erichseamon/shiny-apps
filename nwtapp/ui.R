@@ -10,6 +10,7 @@ shinyUI(navbarPage(theme="http://bootswatch.com/spacelab/bootstrap.css", inverse
   collapsible=TRUE,
   id="nb",
   tabPanel("Climate", value="vis",
+  tags$head(includeScript("ga-nwtapp.js"), includeScript("ga-allapps.js")),
   shpPolyInput("user_shapefile", "Upload polygon shapefile", "btn_modal_shp"),
   bsModal("modal_loc", "Community Insights", "btn_modal_loc", size = "large",
     fluidRow(
@@ -71,19 +72,21 @@ shinyUI(navbarPage(theme="http://bootswatch.com/spacelab/bootstrap.css", inverse
         column(3, h4("Mask:")),
         column(3, uiOutput("Mask_in_use"))
       )
-    )
+    ),
+    fluidRow(column(12, downloadButton("dl_raster", "Get Map (.tif)", class="btn-block")))
   ),
-  absolutePanel(id="controls", top=60, left=-20, height=300, width=300, draggable=FALSE,
+  absolutePanel(id="controls", top=60, left=-20, height=300, width=300,
     plotOutput("sp_density_plot", width="100%", height="auto")
   ),
   absolutePanel(bottom=10, left=10,
     conditionalPanel(is_gcm_string, checkboxInput("deltas", "Display deltas", FALSE)),
-    checkboxInput("show_communities", "Show communities", TRUE),
-    checkboxInput("show_extent", "Show/crop extent", FALSE),
-    checkboxInput("show_colpal", "Show color options", FALSE),
-    checkboxInput("legend", "Show legend", TRUE),
-    checkboxInput("ttips", "Show popup details", TRUE)
+    checkboxInput("show_communities", "Communities", TRUE),
+    checkboxInput("show_extent", "Crop/mask", FALSE),
+    checkboxInput("show_colpal", "Color options", FALSE),
+    checkboxInput("legend", "Legend", TRUE),
+    checkboxInput("ttips", "Tooltips", FALSE)
   ),
+  bsTooltip("ttips", "Toggle tooltips like this one for other app controls.", "right", options=list(container="body")),
   absolutePanel(id="controls", bottom=240, left=-10, height=190, width=320,
     conditionalPanel("input.show_colpal == true",
     wellPanel(
